@@ -7,8 +7,8 @@ import {
 import { Observable, map } from 'rxjs';
 
 export interface Response<T> {
-  data: T;
   meassage?: string;
+  data: T;
 }
 
 @Injectable()
@@ -19,6 +19,6 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
   ): Observable<Response<T>> {
     return next
       .handle()
-      .pipe(map((data) => ({ data, meassage: 'Berhasil mendapatkan data' })));
+      .pipe(map((data) => ({ meassage: 'Berhasil mendapatkan data', data })));
   }
 }

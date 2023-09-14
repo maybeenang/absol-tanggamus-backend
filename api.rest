@@ -18,6 +18,7 @@ Accept: application/json
     "jamKeluar": "17:00:00"
 }
 
+
 ### Update absen
 PATCH {{baseUrl}}/absen/e3b7954c-4116-4691-b90b-5fd85f6e2683 HTTP/1.1
 Content-Type: application/json
@@ -29,4 +30,29 @@ Accept: application/json
     "jamBatas": "09:00:00",
     "jamKeluar": "17:00:00",
     "statusAbsenId": 2
+}
+
+### Get all user
+GET {{baseUrl}}/user
+
+### create user
+POST {{baseUrl}}/auth/signup HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nama": "admin",
+    "nip": "111",
+    "email": "admin@admin.co",
+    "password": "masukaja123"
+}
+
+### login user
+POST {{baseUrl}}/auth/signin HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "nip": "111",
+    "password": "masukaja123"
 }

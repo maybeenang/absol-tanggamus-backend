@@ -1,13 +1,20 @@
 import { User } from '@prisma/client';
-import { RoleEntity } from './role.entiry';
+import { Exclude } from 'class-transformer';
 
 export class UserEntity implements User {
   id: string;
-  nip: string;
   nama: string;
+  nip: string;
   email: string;
+
   password: string;
-  roles: RoleEntity[];
+
+  @Exclude()
+  refreshToken: string;
   createdAt: Date;
   updatedAt: Date;
+
+  constructor(partial: Partial<UserEntity>) {
+    Object.assign(this, partial);
+  }
 }

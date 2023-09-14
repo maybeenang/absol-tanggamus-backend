@@ -10,6 +10,7 @@ import {
   UsePipes,
   ValidationPipe,
   UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { AbsenService } from './absen.service';
 import { AbsenEntity } from './entities/absen.entity';
@@ -20,6 +21,7 @@ import { ResponseInterceptor } from 'src/response/response.interceptor';
 
 @Controller('v1/api/absen')
 @UseInterceptors(ResponseInterceptor)
+@UseInterceptors(ClassSerializerInterceptor)
 export class AbsenController {
   constructor(private readonly absenService: AbsenService) {}
 

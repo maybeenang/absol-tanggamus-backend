@@ -1,26 +1,90 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
+import { PrismaService } from 'src/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UserEntity } from './entities/user.entity';
+import { RolesEnum } from './enums/roles.enum';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(data: CreateUserDto): Promise<any> {
+    if (await this.findNip(data.nip)) {
+      throw new BadRequestException(`NIP already exist`);
+    }
+
+    if (await this.findEmail(data.email)) {
+      throw new BadRequestException(`Email already exist`);
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    data.password = hashedPassword;
+
+    const user = await this.prisma.user.create({
+      data: {
+        ...data,
+        role: {
+          connect: {
+            role: RolesEnum.USER,
+          },
+        },
+      },
+    });
+    if (!user) {
+      throw new InternalServerErrorException(`Failed to create user`);
+    }
+
+    await this.addAdmin(user);
+    return user;
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async addAdmin(user: UserEntity): Promise<UserEntity> {
+    const admin = await this.prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        role: {
+          connect: {
+            role: RolesEnum.ADMIN,
+          },
+        },
+      },
+    });
+    if (!admin) {
+      throw new InternalServerErrorException(`Failed to add admin`);
+    }
+
+    return admin;
   }
 
-  async findOne(nip: number) {
-    return;
+  async findOne(id: string): Promise<UserEntity> {
+    const foundUser = await this.prisma.user.findUnique({ where: { id } });
+    if (!foundUser) {
+      throw new NotFoundException(`User not found`);
+    }
+    return foundUser;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findNip(nip: string): Promise<UserEntity> {
+    const foundUser = await this.prisma.user.findUnique({ where: { nip } });
+    return foundUser;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findEmail(email: string): Promise<UserEntity> {
+    const foundUser = await this.prisma.user.findUnique({ where: { email } });
+    return foundUser;
+  }
+
+  async findAll(): Promise<UserEntity[]> {
+    const users: UserEntity[] = await this.prisma.user.findMany();
+
+    return users.map((user) => new UserEntity(user));
   }
 }
