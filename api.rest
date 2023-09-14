@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:3000/v1/api
+
+###
+GET {{baseUrl}}/absen
+
+###
+POST {{baseUrl}}/absen HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "tanggal": "2023-09-12",
+    "jamMasuk": "08:00:00",
+    "jamBatas": "09:00:00",
+    "jamKeluar": "17:00:00"
+}
