@@ -6,18 +6,28 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AbsenService } from './absen.service';
 import { AbsenEntity } from './entities/absen.entity';
 import { CreateAbsenDto } from './dto/create-absen.dto';
+import { FilterAbsenDto } from './dto/filter-absen.dto';
 
 @Controller('v1/api/absen')
 export class AbsenController {
   constructor(private readonly absenService: AbsenService) {}
 
   @Get()
-  async findAll(): Promise<AbsenEntity[]> {
+  async findAll(@Query() filterAbsen: FilterAbsenDto): Promise<AbsenEntity[]> {
+    if (Object.keys(filterAbsen).length) {
+      return await this.absenService.findFilter(filterAbsen);
+    }
     return await this.absenService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<AbsenEntity> {
+    return await this.absenService.findOne(id);
   }
 
   @Post()

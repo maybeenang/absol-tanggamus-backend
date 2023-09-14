@@ -1,15 +1,30 @@
 @baseUrl = http://localhost:3000/v1/api
 
-###
-GET {{baseUrl}}/absen
+### Get all absen
+GET {{baseUrl}}/absen?status=2
 
-###
+### Get absen by id
+GET {{baseUrl}}/absen/1411b168-8c23-4f1a-9f6c-7619de258e
+
+### Creater absen 
 POST {{baseUrl}}/absen HTTP/1.1
 Content-Type: application/json
 Accept: application/json
 
 {
     "tanggal": "2023-09-12",
+    "jamMasuk": "08:00:00",
+    "jamBatas": "09:00:00",
+    "jamKeluar": "17:00:00"
+}
+
+### Update absen
+PATCH {{baseUrl}}/absen/4715fc7b-4c98-4d35-b505-6f387c6b741c HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "tanggal": "2020-09-12",
     "jamMasuk": "08:00:00",
     "jamBatas": "09:00:00",
     "jamKeluar": "17:00:00"
