@@ -1,8 +1,6 @@
 import { statusAbsen, Prisma } from '@prisma/client';
 
-export class AbsenStatusEntity implements statusAbsen {
+export class AbsenStatusEntity {
   id: number;
   keterangan: string;
-  createdAt: Date;
-  updatedAt: Date;
 }

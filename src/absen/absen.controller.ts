@@ -9,15 +9,17 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AbsenService } from './absen.service';
 import { AbsenEntity } from './entities/absen.entity';
 import { CreateAbsenDto } from './dto/create-absen.dto';
 import { FilterAbsenDto } from './dto/filter-absen.dto';
 import { UpdateAbsenDto } from './dto/update-absen.dto';
-import { AbsenStatusValidator } from './pipes/absen-satatus-valiadator.pipe';
+import { ResponseInterceptor } from 'src/response/response.interceptor';
 
 @Controller('v1/api/absen')
+@UseInterceptors(ResponseInterceptor)
 export class AbsenController {
   constructor(private readonly absenService: AbsenService) {}
 
