@@ -1,12 +1,12 @@
 @baseUrl = http://localhost:3001/v1/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMTEiLCJzdWIiOnsiaWQiOiI1MTEwNDYzMy0wMDZiLTQ1OGUtODliMy1lNjlkMGYzODYwY2UifSwiaWF0IjoxNjk0NzI4MjQzLCJleHAiOjE2OTQ4MTQ2NDN9.RHK_zhVdXqtyjWxHbVOwgwl6lTGhqkC0nf26AG2U5YU
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMjAxNDAxOTQiLCJzdWIiOnsiaWQiOiJhNzU5MGE1MS1iMmEyLTRhZmMtYTM0Ni1kYjA0MmY3ZGJlMzIifSwicm9sZSI6W3sicm9sZSI6IkFETUlOIn0seyJyb2xlIjoiVVNFUiJ9XSwiaWF0IjoxNjk0ODAxMzEyLCJleHAiOjE2OTQ4ODc3MTJ9.5g6iJR6MjFS3u6UbgJ2taWq509NNgkgxiFIYNvQ4FxQ
 ### Get all absen
 GET {{baseUrl}}/absen
 Authorization: Bearer {{token}}
 
 ### Get absen by id
-GET {{baseUrl}}/absen/e3b7954c-4116-4691-b90b-5fd85f6e2683
+GET {{baseUrl}}/absen/e24111f5-48f4-4cbf-820d-d0a696541653
+Authorization: Bearer {{token}}
 
 ### Creater absen 
 POST {{baseUrl}}/absen HTTP/1.1
@@ -45,9 +45,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "nama": "admin",
-    "nip": "111",
-    "email": "admin@admin.co",
+    "nama": "Muslim",
+    "nip": "120140100",
+    "email": "muslim@gmail.com",
     "password": "masukaja123"
 }
 
@@ -57,6 +57,14 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "nip": "111",
+    "nip": "120140194",
     "password": "masukaja123"
 }
+
+### logout user
+POST {{baseUrl}}/auth/signout HTTP/1.1
+Authorization: Bearer {{token}}
+
+### get profile
+GET {{baseUrl}}/user/me
+Authorization: Bearer {{token}}

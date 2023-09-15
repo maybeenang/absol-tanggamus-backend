@@ -40,7 +40,6 @@ export class UserService {
       throw new InternalServerErrorException(`Failed to create user`);
     }
 
-    await this.addAdmin(user);
     return user;
   }
 
@@ -76,17 +75,30 @@ export class UserService {
     const foundUser = await this.prisma.user.findUnique({
       where: { nip },
       include: {
-        role: true,
+        role: {
+          select: {
+            role: true,
+          },
+        },
       },
     });
     if (!foundUser) {
       throw new NotFoundException(`User not found`);
     }
-    return foundUser;
+    return new UserEntity(foundUser);
   }
 
   async findNip(nip: string): Promise<UserEntity> {
-    const foundUser = await this.prisma.user.findUnique({ where: { nip } });
+    const foundUser = await this.prisma.user.findUnique({
+      where: { nip },
+      include: {
+        role: {
+          select: {
+            role: true,
+          },
+        },
+      },
+    });
     return foundUser;
   }
 
@@ -96,7 +108,15 @@ export class UserService {
   }
 
   async findAll(): Promise<UserEntity[]> {
-    const users: UserEntity[] = await this.prisma.user.findMany();
+    const users: UserEntity[] = await this.prisma.user.findMany({
+      include: {
+        role: {
+          select: {
+            role: true,
+          },
+        },
+      },
+    });
 
     return users.map((user) => new UserEntity(user));
   }

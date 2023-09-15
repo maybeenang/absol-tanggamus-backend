@@ -6,8 +6,6 @@ import {
 import { PrismaService } from 'src/prisma.service';
 import { AbsenEntity } from './entities/absen.entity';
 import { CreateAbsenDto } from './dto/create-absen.dto';
-import { AbsenStatus } from './enums/absen.enum';
-import { FilterAbsenDto } from './dto/filter-absen.dto';
 import { UpdateAbsenDto } from './dto/update-absen.dto';
 import { AbsenStatusEntity } from './entities/absen-status.entiry';
 
@@ -33,24 +31,6 @@ export class AbsenService {
     return foundStatus;
   }
 
-  async findFilter(filterAbsenDto: FilterAbsenDto): Promise<AbsenEntity[]> {
-    const { status } = filterAbsenDto;
-
-    await this.findAbsenStatus(parseInt(status));
-
-    const foundstatus = await this.prisma.absen.findMany({
-      where: {
-        statusAbsenId: parseInt(status),
-      },
-    });
-
-    if (foundstatus.length === 0) {
-      throw new NotFoundException(`Absen not found`);
-    }
-
-    return foundstatus;
-  }
-
   async findOne(id: string): Promise<AbsenEntity> {
     try {
       const foundAbsen = await this.prisma.absen.findUnique({ where: { id } });
@@ -71,7 +51,6 @@ export class AbsenService {
         jamMasuk: new Date(`${tanggal}:${jamMasuk}`).toISOString(),
         jamBatas: new Date(`${tanggal}:${jamBatas}`).toISOString(),
         jamKeluar: new Date(`${tanggal}:${jamKeluar}`).toISOString(),
-        statusAbsenId: AbsenStatus.BELUMABSEN,
       },
     });
   }
@@ -90,7 +69,6 @@ export class AbsenService {
         jamMasuk: new Date(`${tanggal}:${jamMasuk}`).toISOString(),
         jamBatas: new Date(`${tanggal}:${jamBatas}`).toISOString(),
         jamKeluar: new Date(`${tanggal}:${jamKeluar}`).toISOString(),
-        statusAbsenId,
       },
     });
   }

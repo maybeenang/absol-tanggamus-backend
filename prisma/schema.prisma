@@ -16,8 +16,8 @@ model User {
   nip       String   @unique
   email     String   @unique
   password  String
-  absen     Absen[]
   role      Roles[]
+  history   History[]
   refreshToken String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -33,22 +33,32 @@ model Roles {
 
 model Absen {
   id            String      @id @default(uuid())
-  jamAbsen      DateTime?
   tanggal       DateTime
   jamMasuk      DateTime
   jamBatas      DateTime
   jamKeluar     DateTime
-  user          User[]
-  statusAbsen   statusAbsen @relation(fields: [statusAbsenId], references: [id])
-  statusAbsenId Int
+  history       History[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
 
-model statusAbsen {
+model History {
+  id            String      @id @default(uuid())
+  jamAbsen      DateTime
+  absenId       String?
+  absen         Absen?       @relation(fields: [absenId], references: [id])
+  statusAbsenId Int
+  statusAbsen   StatusAbsen @relation(fields: [statusAbsenId], references: [id])
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model StatusAbsen {
   id         Int      @id @default(autoincrement())
+  history    History[]
   keterangan String
-  absen      Absen[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

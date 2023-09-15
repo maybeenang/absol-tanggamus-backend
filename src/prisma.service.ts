@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { AbsenStatus } from './absen/enums/absen.enum';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -62,6 +63,42 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       });
     }
     this.logger.log('Roles field is ready');
+    this.logger.log('Checking user field');
+    const countUser: number = await this.user.count();
+    if (countUser < 1) {
+      this.logger.log('User field is empty, creating data...');
+      const user = await this.user.create({
+        data: {
+          nama: 'Admin',
+          nip: '120140194',
+          password: bcrypt.hashSync('masukaja123', 10),
+          role: {
+            connect: {
+              id: 1,
+            },
+          },
+          email: 'admin@admin.com',
+        },
+      });
+      if (!user) {
+        this.logger.error('Failed to create user');
+      }
+
+      await this.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          role: {
+            connect: {
+              id: 2,
+            },
+          },
+        },
+      });
+    }
+    this.logger.log('User field is ready');
+
     this.logger.log('Data initialization is done');
   }
 }

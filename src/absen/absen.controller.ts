@@ -16,40 +16,42 @@ import {
 import { AbsenService } from './absen.service';
 import { AbsenEntity } from './entities/absen.entity';
 import { CreateAbsenDto } from './dto/create-absen.dto';
-import { FilterAbsenDto } from './dto/filter-absen.dto';
 import { UpdateAbsenDto } from './dto/update-absen.dto';
 import { ResponseInterceptor } from 'src/response/response.interceptor';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RoleGuard } from 'src/auth/guards/role.guard';
 
 @Controller('v1/api/absen')
 export class AbsenController {
   constructor(private readonly absenService: AbsenService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN', 'USER')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   @UseInterceptors(ClassSerializerInterceptor, ResponseInterceptor)
-  async findAll(@Query() filterAbsen: FilterAbsenDto): Promise<AbsenEntity[]> {
-    if (Object.keys(filterAbsen).length) {
-      return await this.absenService.findFilter(filterAbsen);
-    }
+  async findAll(): Promise<AbsenEntity[]> {
     return await this.absenService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN', 'USER')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor, ResponseInterceptor)
   async findOne(@Param('id') id: string): Promise<AbsenEntity> {
     return await this.absenService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   @UsePipes(ValidationPipe)
   async create(@Body() data: CreateAbsenDto): Promise<AbsenEntity> {
     return await this.absenService.create(data);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   @UsePipes(new ValidationPipe({ transform: true }))
   async update(
@@ -59,7 +61,8 @@ export class AbsenController {
     return await this.absenService.update(id, data);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
     return await this.absenService.delete(id);

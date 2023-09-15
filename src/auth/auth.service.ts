@@ -41,6 +41,7 @@ export class AuthService {
       sub: {
         id: signInAuthDto.id,
       },
+      role: signInAuthDto.role,
     };
 
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
@@ -98,6 +99,7 @@ export class AuthService {
       sub: {
         id: signInAuthDto.id,
       },
+      role: signInAuthDto.role,
     };
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
 
