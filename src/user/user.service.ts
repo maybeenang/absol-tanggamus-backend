@@ -72,6 +72,19 @@ export class UserService {
     return foundUser;
   }
 
+  async getProfile(nip: string): Promise<UserEntity> {
+    const foundUser = await this.prisma.user.findUnique({
+      where: { nip },
+      include: {
+        role: true,
+      },
+    });
+    if (!foundUser) {
+      throw new NotFoundException(`User not found`);
+    }
+    return foundUser;
+  }
+
   async findNip(nip: string): Promise<UserEntity> {
     const foundUser = await this.prisma.user.findUnique({ where: { nip } });
     return foundUser;
