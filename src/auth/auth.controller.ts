@@ -14,6 +14,7 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshJwtAuthGuard } from './guards/refresh-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('v1/api/auth')
 export class AuthController {
@@ -29,6 +30,12 @@ export class AuthController {
   @Post('signin')
   async login(@Req() req, @Res() res: Response) {
     return this.authService.login(req.user, res);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('signout')
+  async logout(@Req() req, @Res() res: Response) {
+    return this.authService.logout(req.user, res);
   }
 
   @UseGuards(RefreshJwtAuthGuard)

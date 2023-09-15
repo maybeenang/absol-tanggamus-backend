@@ -1,16 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { async } from 'rxjs';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   async create(createAuthDto: CreateUserDto): Promise<UserEntity> {
@@ -30,7 +37,7 @@ export class AuthService {
 
   async login(signInAuthDto: UserEntity, res: any) {
     const payload = {
-      username: signInAuthDto.nip,
+      nip: signInAuthDto.nip,
       sub: {
         id: signInAuthDto.id,
       },
@@ -38,6 +45,15 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
     const refreshToken = this.jwtService.sign(payload, { expiresIn: '30d' });
+
+    await this.prismaService.user.update({
+      where: {
+        id: signInAuthDto.id,
+      },
+      data: {
+        refreshToken: refreshToken,
+      },
+    });
 
     res.cookie('gatauapaini', refreshToken, {
       httpOnly: true,
@@ -49,9 +65,36 @@ export class AuthService {
     });
   }
 
+  async logout(signInAuthDto: UserEntity, res: any) {
+    await this.prismaService.user.update({
+      where: {
+        nip: signInAuthDto.nip,
+      },
+      data: {
+        refreshToken: null,
+      },
+    });
+
+    res.clearCookie('gatauapaini', { httpOnly: true });
+
+    res.send({
+      message: 'Logout success',
+    });
+  }
+
   async refresh(signInAuthDto: UserEntity, res: any) {
+    const user = await this.userService.findNip(signInAuthDto.nip);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    if (!user.refreshToken) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+
     const payload = {
-      username: signInAuthDto.nip,
+      nip: signInAuthDto.nip,
       sub: {
         id: signInAuthDto.id,
       },
