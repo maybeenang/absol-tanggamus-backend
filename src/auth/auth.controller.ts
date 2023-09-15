@@ -5,12 +5,15 @@ import {
   UsePipes,
   ValidationPipe,
   UseGuards,
-  Request,
+  Req,
+  Res,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshJwtAuthGuard } from './guards/refresh-auth.guard';
 
 @Controller('v1/api/auth')
 export class AuthController {
@@ -24,7 +27,13 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('signin')
-  async login(@Request() req) {
-    return await this.authService.login(req.user);
+  async login(@Req() req, @Res() res: Response) {
+    return this.authService.login(req.user, res);
+  }
+
+  @UseGuards(RefreshJwtAuthGuard)
+  @Get('refresh')
+  async refresh(@Req() req, @Res() res) {
+    return this.authService.refresh(req.user, res);
   }
 }

@@ -14,7 +14,6 @@ export class AuthService {
   ) {}
 
   async create(createAuthDto: CreateUserDto): Promise<UserEntity> {
-    console.log(createAuthDto);
     return await this.userService.create(createAuthDto);
   }
 
@@ -29,15 +28,38 @@ export class AuthService {
     return null;
   }
 
-  async login(signInAuthDto: UserEntity) {
+  async login(signInAuthDto: UserEntity, res: any) {
     const payload = {
-      nip: signInAuthDto.nip,
+      username: signInAuthDto.nip,
       sub: {
         id: signInAuthDto.id,
       },
     };
-    return {
-      access_token: this.jwtService.sign(payload),
+
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '30d' });
+
+    res.cookie('gatauapaini', refreshToken, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    });
+
+    res.send({
+      accessToken,
+    });
+  }
+
+  async refresh(signInAuthDto: UserEntity, res: any) {
+    const payload = {
+      username: signInAuthDto.nip,
+      sub: {
+        id: signInAuthDto.id,
+      },
     };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '1d' });
+
+    res.send({
+      accessToken,
+    });
   }
 }

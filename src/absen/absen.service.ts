@@ -44,6 +44,10 @@ export class AbsenService {
       },
     });
 
+    if (foundstatus.length === 0) {
+      throw new NotFoundException(`Absen not found`);
+    }
+
     return foundstatus;
   }
 
@@ -91,16 +95,11 @@ export class AbsenService {
     });
   }
 
-  async delete(id: string, data: CreateAbsenDto): Promise<void> {
-    const { tanggal, jamMasuk, jamBatas, jamKeluar } = data;
-    await this.prisma.absen.update({
+  async delete(id: string): Promise<void> {
+    await this.findOne(id);
+
+    await this.prisma.absen.delete({
       where: { id },
-      data: {
-        tanggal: new Date(tanggal).toISOString(),
-        jamMasuk: new Date(`${tanggal}:${jamMasuk}`).toISOString(),
-        jamBatas: new Date(`${tanggal}:${jamBatas}`).toISOString(),
-        jamKeluar: new Date(`${tanggal}:${jamKeluar}`).toISOString(),
-      },
     });
   }
 }
