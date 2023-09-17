@@ -8,6 +8,7 @@ import { AbsenEntity } from './entities/absen.entity';
 import { CreateAbsenDto } from './dto/create-absen.dto';
 import { UpdateAbsenDto } from './dto/update-absen.dto';
 import { AbsenStatusEntity } from './entities/absen-status.entiry';
+import { AbsenStatus } from './enums/absen.enum';
 
 @Injectable()
 export class AbsenService {
@@ -39,7 +40,25 @@ export class AbsenService {
     try {
       const foundAbsen = await this.prisma.absen.findUnique({
         where: { id },
-        include: { history: true },
+        include: {
+          history: {
+            include: {
+              statusAbsen: {
+                select: {
+                  keterangan: true,
+                  id: true,
+                },
+              },
+              user: {
+                select: {
+                  id: true,
+                  nama: true,
+                  nip: true,
+                },
+              },
+            },
+          },
+        },
       });
       if (!foundAbsen) {
         throw new NotFoundException(`Absen tidak ditemukan`);
@@ -64,12 +83,26 @@ export class AbsenService {
       throw new BadRequestException(`Absen sudah ada untuk tanggal ini`);
     }
 
+    const users = await this.prisma.user.findMany({
+      select: {
+        nip: true,
+      },
+    });
+
     return await this.prisma.absen.create({
       data: {
         tanggal: new Date(tanggal).toISOString(),
         jamMasuk: new Date(`${tanggal}:${jamMasuk}`).toISOString(),
         jamBatas: new Date(`${tanggal}:${jamBatas}`).toISOString(),
         jamKeluar: new Date(`${tanggal}:${jamKeluar}`).toISOString(),
+        history: {
+          createMany: {
+            data: users.map((user) => ({
+              statusAbsenId: AbsenStatus.BELUMABSEN,
+              userNip: user.nip,
+            })),
+          },
+        },
       },
     });
   }

@@ -36,15 +36,8 @@ export class UserController {
 
   @Roles('USER')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('absen')
-  async getAbsen(@Req() request) {
-    return await this.userService.absenUser(request.user.nip);
-  }
-
-  @Roles('USER')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('absen-history/:id')
-  async getAbsenHistory(@Param('id') id: string) {
-    return await this.userService.findAllUserAbsen(id);
+  @Get('absen-masuk/:id')
+  async getAbsen(@Param('id') idAbsen: string, @Req() request) {
+    return await this.userService.absenUser(idAbsen, request.user.nip);
   }
 }

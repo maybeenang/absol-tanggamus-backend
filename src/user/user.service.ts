@@ -145,36 +145,27 @@ export class UserService {
     return user;
   }
 
-  async absenUser(nip: string): Promise<any> {
-    const user = await this.findNip(nip);
-    if (!user) {
-      throw new NotFoundException(`User not found`);
-    }
+  async absenUser(idAbsen: string, nip: string): Promise<any> {
+    const absen = await this.absenService.findOne(idAbsen);
 
-    const absen = await this.absenService.findAbsenByDate();
-
-    if (!absen) {
-      throw new NotFoundException(`Absen not found`);
-    }
-
-    const historyUser = await this.prisma.history.findMany({
+    const historyUser = await this.prisma.history.findFirstOrThrow({
       where: {
         AND: [
           {
-            user: {
-              nip: nip,
-            },
-            absen: {
-              id: absen.id,
-            },
+            absenId: idAbsen,
+          },
+          {
+            userNip: nip,
+          },
+          {
+            statusAbsenId: AbsenStatus.BELUMABSEN,
+          },
+          {
+            jamAbsen: null,
           },
         ],
       },
     });
-
-    if (historyUser.length > 0) {
-      throw new BadRequestException(`Anda sudah absen`);
-    }
 
     const jamAbsen = new Date();
     let statusAbsen = AbsenStatus.BELUMABSEN;
@@ -201,24 +192,13 @@ export class UserService {
       statusAbsen = AbsenStatus.TIDAKABSEN;
     }
 
-    const history = await this.prisma.history.create({
+    const history = await this.prisma.history.update({
+      where: {
+        id: historyUser.id,
+      },
       data: {
-        absen: {
-          connect: {
-            id: absen.id,
-          },
-        },
-        user: {
-          connect: {
-            nip: nip,
-          },
-        },
-        jamAbsen: new Date().toISOString(),
-        statusAbsen: {
-          connect: {
-            id: statusAbsen,
-          },
-        },
+        statusAbsenId: statusAbsen,
+        jamAbsen: jamAbsen.toISOString(),
       },
     });
 

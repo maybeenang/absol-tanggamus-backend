@@ -1,11 +1,10 @@
 @baseUrl = http://localhost:3001/v1/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMjAxNDAxOTQiLCJzdWIiOnsiaWQiOiJhMDcyZmQzOC1jMDg3LTQyMDItYjZmNC0xNDM2MzczYWUzYjQifSwicm9sZSI6W3sicm9sZSI6IkFETUlOIn0seyJyb2xlIjoiVVNFUiJ9XSwiaWF0IjoxNjk0OTI0Njc3LCJleHAiOjE2OTUwMTEwNzd9.HGjav7NIAanKaHyj-5lIFXQQBiSfi6R-x-CU8tdLlAA
-### Get all absen
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMjAxNDAxOTQiLCJzdWIiOnsiaWQiOiI3MjFiNWEwOS01YjljLTRhYzUtYTFlZS1hMWZkZWZkZGY1NjcifSwicm9sZSI6W3sicm9sZSI6IkFETUlOIn0seyJyb2xlIjoiVVNFUiJ9XSwiaWF0IjoxNjk0OTQzMjUxLCJleHAiOjE2OTUwMjk2NTF9.kffU5Ci-DRurnaDb8ZPjH7fkzp-oHOgGQnyxnCJN3F8
 GET {{baseUrl}}/absen
 Authorization: Bearer {{token}}
 
 ### Get absen by id
-GET {{baseUrl}}/absen/e24111f5-48f4-4cbf-820d-d0a696541653
+GET {{baseUrl}}/absen/578e7f83-f056-461e-b7b9-40d455db4443
 Authorization: Bearer {{token}}
 
 ### Creater absen 
@@ -77,5 +76,5 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/user/absen
 Authorization: Bearer {{token}}
 ### get absen by user
-GET {{baseUrl}}/user/absen-history/6e944992-4fa4-41a9-893b-ef40aec06ec2
+GET {{baseUrl}}/user/absen-masuk/8ac9da09-b873-4ebd-8a1d-92cc48e28312
 Authorization: Bearer {{token}}

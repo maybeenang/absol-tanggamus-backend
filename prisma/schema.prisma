@@ -44,13 +44,13 @@ model Absen {
 
 model History {
   id            String      @id @default(uuid())
-  jamAbsen      DateTime
+  jamAbsen      DateTime?
   absenId       String?
   absen         Absen?      @relation(fields: [absenId], references: [id], onDelete: Cascade)
   statusAbsenId Int
   statusAbsen   StatusAbsen @relation(fields: [statusAbsenId], references: [id])
   userNip       String
-  user          User        @relation(fields: [userNip], references: [id])
+  user          User        @relation(fields: [userNip], references: [nip])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
