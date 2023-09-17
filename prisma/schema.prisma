@@ -11,54 +11,54 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  nama      String
-  nip       String   @unique
-  email     String   @unique
-  password  String
-  role      Roles[]
-  history   History[]
+  id           String    @id @default(uuid())
+  nama         String
+  nip          String    @unique
+  email        String    @unique
+  password     String
+  role         Roles[]
+  history      History[]
   refreshToken String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Roles {
   id        Int      @id @default(autoincrement())
-  role      String @unique
+  role      String   @unique
   user      User[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Absen {
-  id            String      @id @default(uuid())
-  tanggal       DateTime
-  jamMasuk      DateTime
-  jamBatas      DateTime
-  jamKeluar     DateTime
-  history       History[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id        String    @id @default(uuid())
+  tanggal   DateTime
+  jamMasuk  DateTime
+  jamBatas  DateTime
+  jamKeluar DateTime
+  history   History[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model History {
   id            String      @id @default(uuid())
   jamAbsen      DateTime
   absenId       String?
-  absen         Absen?       @relation(fields: [absenId], references: [id])
+  absen         Absen?      @relation(fields: [absenId], references: [id], onDelete: Cascade)
   statusAbsenId Int
   statusAbsen   StatusAbsen @relation(fields: [statusAbsenId], references: [id])
-  userId        String
-  user          User      @relation(fields: [userId], references: [id])
+  userNip       String
+  user          User        @relation(fields: [userNip], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
 
 model StatusAbsen {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   history    History[]
   keterangan String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }

@@ -26,7 +26,7 @@ import { RoleGuard } from 'src/auth/guards/role.guard';
 export class AbsenController {
   constructor(private readonly absenService: AbsenService) {}
 
-  @Roles('ADMIN', 'USER')
+  @Roles('ADMIN')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   @UseInterceptors(ClassSerializerInterceptor, ResponseInterceptor)
@@ -34,7 +34,7 @@ export class AbsenController {
     return await this.absenService.findAll();
   }
 
-  @Roles('ADMIN', 'USER')
+  @Roles('ADMIN')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor, ResponseInterceptor)

@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3001/v1/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMjAxNDAxOTQiLCJzdWIiOnsiaWQiOiJhNzU5MGE1MS1iMmEyLTRhZmMtYTM0Ni1kYjA0MmY3ZGJlMzIifSwicm9sZSI6W3sicm9sZSI6IkFETUlOIn0seyJyb2xlIjoiVVNFUiJ9XSwiaWF0IjoxNjk0ODAxMzEyLCJleHAiOjE2OTQ4ODc3MTJ9.5g6iJR6MjFS3u6UbgJ2taWq509NNgkgxiFIYNvQ4FxQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMjAxNDAxOTQiLCJzdWIiOnsiaWQiOiJhMDcyZmQzOC1jMDg3LTQyMDItYjZmNC0xNDM2MzczYWUzYjQifSwicm9sZSI6W3sicm9sZSI6IkFETUlOIn0seyJyb2xlIjoiVVNFUiJ9XSwiaWF0IjoxNjk0OTI0Njc3LCJleHAiOjE2OTUwMTEwNzd9.HGjav7NIAanKaHyj-5lIFXQQBiSfi6R-x-CU8tdLlAA
 ### Get all absen
 GET {{baseUrl}}/absen
 Authorization: Bearer {{token}}
@@ -23,17 +23,21 @@ Authorization: Bearer {{token}}
 
 
 ### Update absen
-PATCH {{baseUrl}}/absen/e3b7954c-4116-4691-b90b-5fd85f6e2683 HTTP/1.1
+PATCH {{baseUrl}}/absen/cc426332-398d-4ad5-a59c-a562176bf1f0 HTTP/1.1
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{token}}
 
 {
     "tanggal": "2030-09-12",
     "jamMasuk": "08:00:00",
     "jamBatas": "09:00:00",
-    "jamKeluar": "17:00:00",
-    "statusAbsenId": 2
+    "jamKeluar": "17:00:00"
 }
+
+### delete absen
+DELETE  {{baseUrl}}/absen/cc426332-398d-4ad5-a59c-a562176bf1f0
+Authorization: Bearer {{token}}
 
 ### Get all user
 GET {{baseUrl}}/user
@@ -67,4 +71,11 @@ Authorization: Bearer {{token}}
 
 ### get profile
 GET {{baseUrl}}/user/me
+Authorization: Bearer {{token}}
+
+### get absen by user
+GET {{baseUrl}}/user/absen
+Authorization: Bearer {{token}}
+### get absen by user
+GET {{baseUrl}}/user/absen-history/6e944992-4fa4-41a9-893b-ef40aec06ec2
 Authorization: Bearer {{token}}

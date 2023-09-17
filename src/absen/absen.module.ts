@@ -7,5 +7,6 @@ import { JwtStrategy } from 'src/auth/strategies/jwt-strategy';
 @Module({
   controllers: [AbsenController],
   providers: [AbsenService, PrismaService, JwtStrategy],
+  exports: [AbsenService],
 })
 export class AbsenModule {}

@@ -5,6 +5,7 @@ import {
   UseInterceptors,
   UseGuards,
   Req,
+  Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './entities/user.entity';
@@ -31,5 +32,19 @@ export class UserController {
   @Get('me')
   async getProfile(@Req() request) {
     return await this.userService.getProfile(request.user.nip);
+  }
+
+  @Roles('USER')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('absen')
+  async getAbsen(@Req() request) {
+    return await this.userService.absenUser(request.user.nip);
+  }
+
+  @Roles('USER')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('absen-history/:id')
+  async getAbsenHistory(@Param('id') id: string) {
+    return await this.userService.findAllUserAbsen(id);
   }
 }

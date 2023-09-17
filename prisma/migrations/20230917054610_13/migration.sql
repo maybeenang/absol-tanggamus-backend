@@ -42,9 +42,9 @@ CREATE TABLE `Absen` (
 CREATE TABLE `History` (
     `id` VARCHAR(191) NOT NULL,
     `jamAbsen` DATETIME(3) NOT NULL,
-    `absenId` VARCHAR(191) NOT NULL,
+    `absenId` VARCHAR(191) NULL,
     `statusAbsenId` INTEGER NOT NULL,
-    `userId` VARCHAR(191) NOT NULL,
+    `userNip` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -71,13 +71,13 @@ CREATE TABLE `_RolesToUser` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `History` ADD CONSTRAINT `History_absenId_fkey` FOREIGN KEY (`absenId`) REFERENCES `Absen`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `History` ADD CONSTRAINT `History_absenId_fkey` FOREIGN KEY (`absenId`) REFERENCES `Absen`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `History` ADD CONSTRAINT `History_statusAbsenId_fkey` FOREIGN KEY (`statusAbsenId`) REFERENCES `StatusAbsen`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `History` ADD CONSTRAINT `History_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `History` ADD CONSTRAINT `History_userNip_fkey` FOREIGN KEY (`userNip`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_RolesToUser` ADD CONSTRAINT `_RolesToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Roles`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -8,6 +8,7 @@ import { LocalStrategy } from './strategies/local-strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt-strategy';
 import { RefreshStrategy } from './strategies/refresh-strategy';
+import { AbsenService } from 'src/absen/absen.service';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RefreshStrategy } from './strategies/refresh-strategy';
   providers: [
     AuthService,
     UserService,
+    AbsenService,
     PrismaService,
     LocalStrategy,
     JwtStrategy,
