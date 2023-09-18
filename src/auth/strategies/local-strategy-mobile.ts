@@ -9,16 +9,19 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategyMobile extends PassportStrategy(
+  Strategy,
+  'local-mobile',
+) {
   constructor(private authService: AuthService) {
     super({
       usernameField: 'nip',
     });
   }
-  private readonly logger = new Logger(LocalStrategy.name);
+  private readonly logger = new Logger(LocalStrategyMobile.name);
 
   async validate(username: string, password: string): Promise<any> {
-    const user = await this.authService.validateAdmin(username, password);
+    const user = await this.authService.validateUser(username, password);
     if (!user) {
       throw new UnauthorizedException();
     }

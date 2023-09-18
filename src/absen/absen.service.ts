@@ -83,6 +83,8 @@ export class AbsenService {
       throw new BadRequestException(`Absen sudah ada untuk tanggal ini`);
     }
 
+    console.log(jamMasuk);
+
     const users = await this.prisma.user.findMany({
       select: {
         nip: true,
@@ -92,9 +94,9 @@ export class AbsenService {
     return await this.prisma.absen.create({
       data: {
         tanggal: new Date(tanggal).toISOString(),
-        jamMasuk: new Date(`${tanggal}:${jamMasuk}`).toISOString(),
-        jamBatas: new Date(`${tanggal}:${jamBatas}`).toISOString(),
-        jamKeluar: new Date(`${tanggal}:${jamKeluar}`).toISOString(),
+        jamMasuk: new Date(jamMasuk).toISOString(),
+        jamBatas: new Date(jamBatas).toISOString(),
+        jamKeluar: new Date(jamKeluar).toISOString(),
         history: {
           createMany: {
             data: users.map((user) => ({

@@ -1,10 +1,10 @@
-@baseUrl = http://localhost:3001/v1/api
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMjAxNDAxOTQiLCJzdWIiOnsiaWQiOiI3MjFiNWEwOS01YjljLTRhYzUtYTFlZS1hMWZkZWZkZGY1NjcifSwicm9sZSI6W3sicm9sZSI6IkFETUlOIn0seyJyb2xlIjoiVVNFUiJ9XSwiaWF0IjoxNjk0OTQzMjUxLCJleHAiOjE2OTUwMjk2NTF9.kffU5Ci-DRurnaDb8ZPjH7fkzp-oHOgGQnyxnCJN3F8
+@baseUrl = http://localhost:3002/v1/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaXAiOiIxMjAxNDAxOTQiLCJzdWIiOnsiaWQiOiI4ZDU0YmI0My1hNDU3LTQyMGUtYjI0OS1jNzc5YjJhODU5MzQifSwicm9sZSI6W3sicm9sZSI6IkFETUlOIn0seyJyb2xlIjoiVVNFUiJ9XSwiaWF0IjoxNjk1MDI5NDU5LCJleHAiOjE2OTUxMTU4NTl9.1N3TcwNclOaprBW6j9YM8DP5zyxybXzjtG-kvFta9UQ
 GET {{baseUrl}}/absen
 Authorization: Bearer {{token}}
 
 ### Get absen by id
-GET {{baseUrl}}/absen/578e7f83-f056-461e-b7b9-40d455db4443
+GET {{baseUrl}}/absen/2ff0ab08-81f9-481e-8071-8a27ac403580
 Authorization: Bearer {{token}}
 
 ### Creater absen 
@@ -46,6 +46,7 @@ Authorization: Bearer {{token}}
 POST {{baseUrl}}/auth/signup HTTP/1.1
 Content-Type: application/json
 Accept: application/json
+Authorization: Bearer {{token}}
 
 {
     "nama": "Muslim",
@@ -72,9 +73,11 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/user/me
 Authorization: Bearer {{token}}
 
-### get absen by user
-GET {{baseUrl}}/user/absen
+### get absen today
+GET {{baseUrl}}/user/absen-today
 Authorization: Bearer {{token}}
+
+
 ### get absen by user
-GET {{baseUrl}}/user/absen-masuk/8ac9da09-b873-4ebd-8a1d-92cc48e28312
+GET {{baseUrl}}/user/absen-masuk/fb205e9f-ed26-478e-a9d8-8a3fb1931467
 Authorization: Bearer {{token}}

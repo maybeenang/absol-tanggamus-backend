@@ -41,7 +41,7 @@ CREATE TABLE `Absen` (
 -- CreateTable
 CREATE TABLE `History` (
     `id` VARCHAR(191) NOT NULL,
-    `jamAbsen` DATETIME(3) NOT NULL,
+    `jamAbsen` DATETIME(3) NULL,
     `absenId` VARCHAR(191) NULL,
     `statusAbsenId` INTEGER NOT NULL,
     `userNip` VARCHAR(191) NOT NULL,
@@ -77,7 +77,7 @@ ALTER TABLE `History` ADD CONSTRAINT `History_absenId_fkey` FOREIGN KEY (`absenI
 ALTER TABLE `History` ADD CONSTRAINT `History_statusAbsenId_fkey` FOREIGN KEY (`statusAbsenId`) REFERENCES `StatusAbsen`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `History` ADD CONSTRAINT `History_userNip_fkey` FOREIGN KEY (`userNip`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `History` ADD CONSTRAINT `History_userNip_fkey` FOREIGN KEY (`userNip`) REFERENCES `User`(`nip`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_RolesToUser` ADD CONSTRAINT `_RolesToUser_A_fkey` FOREIGN KEY (`A`) REFERENCES `Roles`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -35,7 +35,32 @@ export class AuthService {
     return null;
   }
 
-  async login(signInAuthDto: UserEntity, res: any) {
+  async validateAdmin(username: string, password: string): Promise<any> {
+    const user = await this.userService.findNip(username);
+    const admin = await this.userService.checkAdmin(username);
+
+    if (user && admin && (await bcrypt.compare(password, user.password))) {
+      const { password, ...result } = user;
+      return result;
+    }
+
+    return null;
+  }
+
+  async loginAdmin(signInAuthDto: UserEntity, res: any) {
+    const { accessToken, refreshToken } = await this.login(signInAuthDto);
+
+    res.cookie('gatauapaini', refreshToken, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    });
+
+    res.send({
+      accessToken,
+    });
+  }
+
+  async login(signInAuthDto: UserEntity) {
     const payload = {
       nip: signInAuthDto.nip,
       sub: {
@@ -56,14 +81,10 @@ export class AuthService {
       },
     });
 
-    res.cookie('gatauapaini', refreshToken, {
-      httpOnly: true,
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    });
-
-    res.send({
+    return {
       accessToken,
-    });
+      refreshToken,
+    };
   }
 
   async logout(signInAuthDto: UserEntity, res: any) {

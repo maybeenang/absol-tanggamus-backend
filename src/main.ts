@@ -12,7 +12,7 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(cookieParser());
-  await app.listen(3001);
-  logger.log(`Application listening on port 3001`);
+  await app.listen(3002);
+  logger.log(`Application listening on port 3002`);
 }
 bootstrap();

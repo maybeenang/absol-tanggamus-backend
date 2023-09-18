@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt-strategy';
 import { RefreshStrategy } from './strategies/refresh-strategy';
 import { AbsenService } from 'src/absen/absen.service';
+import { LocalStrategyMobile } from './strategies/local-strategy-mobile';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AbsenService } from 'src/absen/absen.service';
     AbsenService,
     PrismaService,
     LocalStrategy,
+    LocalStrategyMobile,
     JwtStrategy,
     RefreshStrategy,
   ],

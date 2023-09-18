@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
@@ -11,6 +12,7 @@ import { RolesEnum } from './enums/roles.enum';
 import * as bcrypt from 'bcrypt';
 import { AbsenService } from 'src/absen/absen.service';
 import { AbsenStatus } from 'src/absen/enums/absen.enum';
+import { FilterHistoryDateDto } from 'src/absen/dto/filter-history-date.dto';
 
 @Injectable()
 export class UserService {
@@ -18,6 +20,8 @@ export class UserService {
     private readonly prisma: PrismaService,
     private readonly absenService: AbsenService,
   ) {}
+
+  private readonly logger = new Logger(UserService.name);
 
   async create(data: CreateUserDto): Promise<any> {
     if (await this.findNip(data.nip)) {
@@ -41,6 +45,11 @@ export class UserService {
         },
       },
     });
+
+    if (data.role === RolesEnum.ADMIN) {
+      await this.addAdmin(user);
+    }
+
     if (!user) {
       throw new InternalServerErrorException(`Failed to create user`);
     }
@@ -66,6 +75,31 @@ export class UserService {
     }
 
     return admin;
+  }
+
+  async checkAdmin(nip: string): Promise<boolean> {
+    const admin = await this.prisma.user.findFirst({
+      where: {
+        AND: [
+          {
+            nip,
+          },
+          {
+            role: {
+              some: {
+                role: RolesEnum.ADMIN,
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    if (!admin) {
+      return false;
+    }
+
+    return true;
   }
 
   async findOne(id: string): Promise<UserEntity> {
@@ -114,16 +148,13 @@ export class UserService {
 
   async findAll(): Promise<UserEntity[]> {
     const users: UserEntity[] = await this.prisma.user.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         role: {
           select: {
             role: true,
-          },
-        },
-        history: {
-          include: {
-            absen: true,
-            statusAbsen: true,
           },
         },
       },
@@ -145,10 +176,46 @@ export class UserService {
     return user;
   }
 
+  async getAbsenToday(nip: string): Promise<any> {
+    // get today
+
+    const absen = await this.prisma.history.findFirst({
+      where: {
+        AND: [
+          {
+            userNip: nip,
+          },
+          {
+            absen: {
+              jamKeluar: {
+                gte: new Date().toISOString(),
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        absen: true,
+        statusAbsen: true,
+      },
+      orderBy: {
+        absen: {
+          tanggal: 'desc',
+        },
+      },
+    });
+
+    if (!absen) {
+      throw new NotFoundException(`tidak ada absen`);
+    }
+
+    return absen;
+  }
+
   async absenUser(idAbsen: string, nip: string): Promise<any> {
     const absen = await this.absenService.findOne(idAbsen);
 
-    const historyUser = await this.prisma.history.findFirstOrThrow({
+    const historyUser = await this.prisma.history.findFirst({
       where: {
         AND: [
           {
@@ -167,28 +234,29 @@ export class UserService {
       },
     });
 
+    if (!historyUser) {
+      throw new BadRequestException(`Anda sudah absen`);
+    }
+
     const jamAbsen = new Date();
     let statusAbsen = AbsenStatus.BELUMABSEN;
 
-    if (jamAbsen < new Date(absen.jamMasuk)) {
+    if (jamAbsen < absen.jamMasuk) {
       throw new BadRequestException(`Belum waktunya absen`);
     }
-
     if (
-      jamAbsen > new Date(absen.jamMasuk) &&
+      jamAbsen >= new Date(absen.jamMasuk) &&
       jamAbsen < new Date(absen.jamBatas)
     ) {
       statusAbsen = AbsenStatus.BERHASILABSEN;
     }
-
     if (
-      jamAbsen > new Date(absen.jamBatas) &&
+      jamAbsen >= new Date(absen.jamBatas) &&
       jamAbsen < new Date(absen.jamKeluar)
     ) {
       statusAbsen = AbsenStatus.TERLAMBAT;
     }
-
-    if (jamAbsen > new Date(absen.jamKeluar)) {
+    if (jamAbsen >= new Date(absen.jamKeluar)) {
       statusAbsen = AbsenStatus.TIDAKABSEN;
     }
 
@@ -206,6 +274,44 @@ export class UserService {
       throw new InternalServerErrorException(`Failed to absen`);
     }
 
-    return history;
+    return {
+      message: 'Absen Berhasil',
+      statusAbsen: statusAbsen,
+    };
+  }
+  async historyUser(dateAbsen: string, nip: string): Promise<any> {
+    const dateConvert = new Date(dateAbsen).toISOString();
+
+    const historyUser = await this.prisma.history.findFirst({
+      where: {
+        AND: [
+          {
+            userNip: nip,
+          },
+          {
+            absen: {
+              jamKeluar: {
+                gte: dateConvert,
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        absen: true,
+        statusAbsen: true,
+      },
+      orderBy: {
+        absen: {
+          tanggal: 'desc',
+        },
+      },
+    });
+
+    if (!historyUser) {
+      throw new NotFoundException(`tidak ada absen`);
+    }
+
+    return historyUser;
   }
 }
