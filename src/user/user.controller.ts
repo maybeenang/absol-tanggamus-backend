@@ -8,6 +8,7 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './entities/user.entity';
@@ -28,6 +29,11 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor, ResponseInterceptor)
   async findAll(): Promise<UserEntity[]> {
     return await this.userService.findAll();
+  }
+
+  @Delete('hapus-user/:id')
+  async deleteUser(@Param('id') id: string): Promise<UserEntity[]> {
+    return await this.userService.delete(id);
   }
 
   @UseInterceptors(ClassSerializerInterceptor, ResponseInterceptor)

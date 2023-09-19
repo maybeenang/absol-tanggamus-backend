@@ -18,7 +18,7 @@ model User {
   password     String
   role         Roles[]
   history      History[]
-  refreshToken String?
+  refreshToken String?   @db.Text
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }
@@ -50,7 +50,7 @@ model History {
   statusAbsenId Int
   statusAbsen   StatusAbsen @relation(fields: [statusAbsenId], references: [id])
   userNip       String
-  user          User        @relation(fields: [userNip], references: [nip])
+  user          User        @relation(fields: [userNip], references: [nip], onDelete: Cascade)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

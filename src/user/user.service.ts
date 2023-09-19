@@ -5,14 +5,13 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { RolesEnum } from './enums/roles.enum';
 import * as bcrypt from 'bcrypt';
 import { AbsenService } from 'src/absen/absen.service';
 import { AbsenStatus } from 'src/absen/enums/absen.enum';
-import { FilterHistoryDateDto } from 'src/absen/dto/filter-history-date.dto';
 
 @Injectable()
 export class UserService {
@@ -141,9 +140,23 @@ export class UserService {
     return foundUser;
   }
 
-  async findEmail(email: string): Promise<UserEntity> {
+  async findEmail(email: string): Promise<any> {
     const foundUser = await this.prisma.user.findUnique({ where: { email } });
     return foundUser;
+  }
+
+  async delete(id: string): Promise<any> {
+    await this.findOne(id);
+
+    const deletedUser = await this.prisma.user.delete({ where: { id } });
+
+    if (!deletedUser) {
+      throw new InternalServerErrorException(`Failed to delete user`);
+    }
+
+    return {
+      message: 'User berhasil di hapus',
+    };
   }
 
   async findAll(): Promise<UserEntity[]> {

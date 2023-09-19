@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AbsenService } from './absen.service';
 import { AbsenController } from './absen.controller';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 import { JwtStrategy } from 'src/auth/strategies/jwt-strategy';
 
 @Module({

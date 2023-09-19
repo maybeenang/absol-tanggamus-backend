@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 import { AbsenEntity } from './entities/absen.entity';
 import { CreateAbsenDto } from './dto/create-absen.dto';
 import { UpdateAbsenDto } from './dto/update-absen.dto';
@@ -82,8 +82,6 @@ export class AbsenService {
     if (foundAbsen.length > 0) {
       throw new BadRequestException(`Absen sudah ada untuk tanggal ini`);
     }
-
-    console.log(jamMasuk);
 
     const users = await this.prisma.user.findMany({
       select: {

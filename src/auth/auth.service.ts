@@ -9,8 +9,7 @@ import { UserEntity } from 'src/user/entities/user.entity';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { async } from 'rxjs';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from 'prisma/prisma.service';
 
 @Injectable()
 export class AuthService {

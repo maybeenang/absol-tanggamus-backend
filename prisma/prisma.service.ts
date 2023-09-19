@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { AbsenStatus } from './absen/enums/absen.enum';
+import { AbsenStatus } from '../src/absen/enums/absen.enum';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
